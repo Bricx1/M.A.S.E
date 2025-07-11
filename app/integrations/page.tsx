@@ -384,6 +384,8 @@ export default function IntegrationsPage() {
         return "/integrations/availity-setup"
       case "quickbooks":
         return "/integrations/quickbooks-setup"
+      case "supabase":
+        return "/integrations/supabase-setup"
       case "vonage":
         return "/integrations/vonage-setup"
       default:
