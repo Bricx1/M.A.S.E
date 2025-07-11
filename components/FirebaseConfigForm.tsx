@@ -13,8 +13,7 @@ export default function FirebaseConfigForm() {
 
   useEffect(() => {
     axios.get('/api/integrations/firebase-config')
-      .then(res => setConfig(res.data))
-      .catch(() => alert('Failed to load config'));
+      .then(res => setConfig(res.data || {}));
   }, []);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -25,32 +24,30 @@ export default function FirebaseConfigForm() {
   const handleSave = async () => {
     try {
       await axios.post('/api/integrations/firebase-config', config);
-      alert('Firebase config saved!');
-    } catch {
+      alert('Saved!');
+    } catch (err) {
+      console.error(err);
       alert('Save failed');
     }
   };
 
   return (
-    <div className="space-y-4 border p-6 rounded-md shadow-md bg-white">
+    <div className="space-y-4">
       <h3 className="text-lg font-semibold">Firebase Configuration</h3>
       {Object.entries(config).map(([key, value]) => (
         <div key={key}>
           <label className="block text-sm capitalize">{key}</label>
           <input
+            type="text"
             name={key}
             value={value}
             onChange={handleChange}
-            className="w-full p-2 border rounded-md"
-            placeholder={`Enter ${key}`}
+            className="w-full p-2 border rounded"
           />
         </div>
       ))}
-      <button
-        onClick={handleSave}
-        className="mt-4 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
-      >
-        Save Firebase Config
+      <button onClick={handleSave} className="bg-blue-600 text-white px-4 py-2 rounded">
+        Save Config
       </button>
     </div>
   );

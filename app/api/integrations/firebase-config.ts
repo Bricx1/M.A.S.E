@@ -1,35 +1,30 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
-import { getFirestore } from 'firebase-admin/firestore';
-import { cert, getApps, initializeApp } from 'firebase-admin/app';
-import serviceAccount from '../../../lib/serviceAccountKey.json'; // Adjust path as needed
-
-
-
-if (!getApps().length) {
-  initializeApp({
-    credential: cert(serviceAccount),
-  });
-}
-
-const db = getFirestore();
+import { NextApiRequest, NextApiResponse } from 'next';
+import { db } from '/firebase'; // Make sure this points to your firebase.ts
+import { doc, getDoc, setDoc } from 'firebase/firestore';
 
 export default async function handler(req: NextApiRequest, res: NextApiResponse) {
-  const docRef = db.collection('integrations').doc('firebase');
+  const ref = doc(db, 'integrations', 'firebase');
 
-  try {
-    if (req.method === 'GET') {
-      const doc = await docRef.get();
-      return res.status(200).json(doc.exists ? doc.data() : {});
+  if (req.method === 'GET') {
+    try {
+      const snapshot = await getDoc(ref);
+      return res.status(200).json(snapshot.exists() ? snapshot.data() : {});
+    } catch (error) {
+      console.error('GET error:', error);
+      return res.status(500).json({ message: 'Error fetching config' });
     }
-
-    if (req.method === 'POST') {
-      await docRef.set(req.body);
-      return res.status(200).json({ message: 'Firebase config saved' });
-    }
-
-    return res.status(405).end('Method Not Allowed');
-  } catch (error) {
-    console.error('API Error:', error);
-    return res.status(500).json({ message: 'Internal Server Error' });
   }
+
+  if (req.method === 'POST') {
+    try {
+      const config = req.body;
+      await setDoc(ref, config);
+      return res.status(200).json({ message: 'Firebase config saved' });
+    } catch (error) {
+      console.error('POST error:', error);
+      return res.status(500).json({ message: 'Error saving config' });
+    }
+  }
+
+  return res.status(405).json({ message: 'Method not allowed' });
 }

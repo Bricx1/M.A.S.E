@@ -1,15 +1,16 @@
-// lib/firebase.ts
 import { initializeApp } from "firebase/app";
 import { getFirestore } from "firebase/firestore";
 
 const firebaseConfig = {
-  apiKey: process.env.NEXT_PUBLIC_FIREBASE_API_KEY,
-  authDomain: process.env.NEXT_PUBLIC_FIREBASE_AUTH_DOMAIN,
-  projectId: process.env.NEXT_PUBLIC_FIREBASE_PROJECT_ID,
-  storageBucket: process.env.NEXT_PUBLIC_FIREBASE_STORAGE_BUCKET,
-  messagingSenderId: process.env.NEXT_PUBLIC_FIREBASE_MESSAGING_SENDER_ID,
-  appId: process.env.NEXT_PUBLIC_FIREBASE_APP_ID,
+   apiKey: "AIzaSyAYOVslG4d6WkFHu6kD9hVwnpYBpF3FN0I",
+  authDomain: "mase-a33f5.firebaseapp.com",
+  projectId: "mase-a33f5",
+  storageBucket: "mase-a33f5.firebasestorage.app",
+  messagingSenderId: "407255269",
+  appId: "1:407255269:web:680b98de984ea7cb74bc0c",
 };
 
 const app = initializeApp(firebaseConfig);
-export const db = getFirestore(app);
+const db = getFirestore(app);
+
+export { db };
