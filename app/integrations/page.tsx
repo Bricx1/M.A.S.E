@@ -37,6 +37,7 @@ import {
   Plus,
   RefreshCw,
   Globe,
+  Flame,
   Building2,
   Phone,
 } from "lucide-react"
@@ -131,6 +132,19 @@ export default function IntegrationsPage() {
       apiCalls: 1247,
       uptime: 99.9,
       color: "bg-green-500",
+      category: "infrastructure",
+    },
+    {
+      id: "firebase",
+      name: "Firebase",
+      description: "Firestore database",
+      icon: Flame,
+      status: "connected",
+      enabled: true,
+      lastSync: "Just now",
+      apiCalls: 0,
+      uptime: 100,
+      color: "bg-orange-500",
       category: "infrastructure",
     },
     {
@@ -384,6 +398,8 @@ export default function IntegrationsPage() {
         return "/integrations/availity-setup"
       case "quickbooks":
         return "/integrations/quickbooks-setup"
+      case "firebase":
+        return "/integrations/firebase-setup"
       case "vonage":
         return "/integrations/vonage-setup"
       default:
