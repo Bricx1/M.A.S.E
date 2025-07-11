@@ -1,41 +1,20 @@
 import { type NextRequest, NextResponse } from "next/server"
+import { db } from "@/lib/firebase"
 
-export async function PATCH(request: NextRequest, { params }: { params: { patientId: string } }) {
+export async function PATCH(
+  request: NextRequest,
+  { params }: { params: { patientId: string } }
+) {
   try {
     const { patientId } = params
     const body = await request.json()
-    const { status, onboardingCompletedBy, onboardingCompletedAt, sessionNotes } = body
 
-    // In production, this would update your database
-    console.log("Updating patient status:", {
-      patientId,
-      status,
-      onboardingCompletedBy,
-      onboardingCompletedAt,
-      sessionNotes,
-    })
-
-    // Mock successful update
-    const updatedPatient = {
-      id: patientId,
-      status,
-      onboardingCompletedBy,
-      onboardingCompletedAt,
-      sessionNotes,
-      portalActivated: status === "onboarded",
-      careServicesEnabled: status === "onboarded",
-    }
-
-    // In production, you would:
-    // 1. Update patient status in database
-    // 2. Activate patient portal access
-    // 3. Enable care services for scheduling
-    // 4. Send notifications to care team
-    // 5. Generate onboarding completion report
+    await db.collection("patients").doc(patientId).update(body)
+    const doc = await db.collection("patients").doc(patientId).get()
 
     return NextResponse.json({
       success: true,
-      patient: updatedPatient,
+      patient: { id: doc.id, ...doc.data() },
       message: "Patient onboarding completed successfully",
     })
   } catch (error) {
