@@ -1,5 +1,5 @@
 import { type NextRequest, NextResponse } from "next/server"
-import { db } from "@/lib/firebase"
+import { supabase } from "@/lib/supabase"
 
 export async function PATCH(
   request: NextRequest,
@@ -9,12 +9,17 @@ export async function PATCH(
     const { patientId } = params
     const body = await request.json()
 
-    await db.collection("patients").doc(patientId).update(body)
-    const doc = await db.collection("patients").doc(patientId).get()
+    const { data, error } = await supabase
+      .from("patients")
+      .update(body)
+      .eq("id", patientId)
+      .select()
+      .single()
+    if (error) throw error
 
     return NextResponse.json({
       success: true,
-      patient: { id: doc.id, ...doc.data() },
+      patient: data,
       message: "Patient onboarding completed successfully",
     })
   } catch (error) {

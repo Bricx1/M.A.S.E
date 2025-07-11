@@ -3,27 +3,27 @@ import { supabase } from "@/lib/supabase"
 
 export async function GET() {
   try {
-    const { data, error } = await supabase.from("patients").select("*")
+    const { data, error } = await supabase.from("test").select("*")
     if (error) throw error
-    return NextResponse.json({ success: true, patients: data })
+    return NextResponse.json({ success: true, data })
   } catch (error) {
-    console.error("Error fetching patients:", error)
+    console.error("Error fetching data from Supabase:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
 
 export async function POST(request: NextRequest) {
   try {
-    const data = await request.json()
-    const { data: inserted, error } = await supabase
-      .from("patients")
-      .insert(data)
+    const body = await request.json()
+    const { data, error } = await supabase
+      .from("test")
+      .insert(body)
       .select()
       .single()
     if (error) throw error
-    return NextResponse.json({ success: true, patient: inserted })
+    return NextResponse.json({ success: true, data })
   } catch (error) {
-    console.error("Error creating patient:", error)
+    console.error("Error writing to Supabase:", error)
     return NextResponse.json({ error: "Internal server error" }, { status: 500 })
   }
 }
